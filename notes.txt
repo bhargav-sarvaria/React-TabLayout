@@ -1,0 +1,1319 @@
+npx create-react-app my-app
+npm i --save bootstrap react-bootstrap
+npm start
+npm i prettier eslint-config-prettier eslint-plugin-prettier -D
+
+Inside App.js
+
+// Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Button} from 'react-bootstrap'
+
+index.js -> Is the first file to execute
+
+react, react-dom => together form the react library
+
+public/index.html => single HTML file for SPAs
+
+App is also a component
+
+JSX => html written inside Javascript files in React components
+javascript-xml
+
+React helps us make custom HTML elements
+
+Javscript without React is imperative, all instructions are given step by step
+React is declarative by using JSX	
+
+React uses Component tree
+
+elements with lower case are native html, for custom components start tag with Uppercase
+
+use {} inside jsx to have javascript variables and functions
+
+data is sent to child components using props (properties)
+
+in Parent component
+
+
+import Child from './Child'; // no .js required
+function Parent(){
+	const title = 'title';
+	return (
+	<div>
+		<Child title = {title} />
+	</div>
+	);
+}
+
+in Child component
+
+import './Child.css' // .css is required to add css files
+function Child(props){
+	return(<div>
+		<p>{props.title}</p>
+	</div>);
+}
+
+
+d = new Date() // check Mozilla docs for toLocaleString()
+d.toLocaleString('en-US', {month: 'long'})
+d.toLocaleString('en-US', {day: '2-digit'})
+d.toLocaleString('en-US', {year: '4-digit'})
+
+
+Card.js => wrapper
+
+****DO the below when Custom component is used as Wrapper around other components*******
+
+import './Card.css';
+
+function Card(props){
+	const classes = 'card ' + props.className;
+	return <div className={classes}>	 	{props.children}</div>			//children is reserved name content inside card wrapper will be available in props.children
+//			to allow children to access css	to allow chil to get prop value
+}
+export default Card;
+
+
+//Event handling
+import React, { useState } from 'react'; 
+
+{
+	const [title, setTitle] = useState(props.title);
+	const [input, setInput] = useState('');
+
+	const [inputForm, setInputForm] = useState({
+		input1: '',
+		input2: '',
+		input3: '',
+	
+	});
+
+	const funcOnCh = (event) => {
+		//onChange handler
+		event.target.value /// new value
+		setInput(event.target.value);
+	}
+
+	const funcName = () => {
+		//function
+		setTitle('updated value!'); // updates title to 'updated value'
+	}
+	
+	const funcOnCh1 = (event) => {
+		setInputForm({
+			...inputForm,
+			input1: event.target.value	
+		}); // Works but not recommended - does not gaurantee latest state as state updates are scheduled
+
+		//recommended - to ensure react uses latest state object
+		setInputForm( (previousState) => {
+			return { ...previousState, input1: event.target.value};
+		});
+	} 
+	
+	const submitHandler = (event) => {
+		event.preventDefault(); // Javascript way to stop page from reload
+		
+		console.log(inputForm);
+			
+		// to reset the form
+		setInputForm( (previousState) => {
+			return { input1: '', 2: '', 3: ''};
+		});
+	}
+	
+	return <button onClick="{funcName} ">But</button>
+	<input type="text" onChange="{funcOnCh}" />
+	<form onSubmit="{submitHandler}"
+	<input type="text" value={inputForm.input1} onChange={funcOnCh1} />
+	<input type="text" value={inputForm.input2} onChange={funcOnCh2} />
+	<input type="text" value={inputForm.input3} onChange={funcOnCh3} />
+	</form>
+}
+
+<form>
+	<label htmlFor="name"></label>  --> for is htmlFor in JSX
+	<input id="name" />
+</form>
+
+
+**** sending data from child to parent component *****
+
+//Parent
+import Child from './Child';
+
+const Parent = (props) => {
+	const saveHandler = (data) => {
+		console.log(data);
+	}
+
+	return (
+		<Child onSave={saveHadler} />
+	)
+}
+
+
+//Child
+
+const Child = (props) => {
+	const [input, setInput] = useState('');
+	const onChangeInput = (event) => {
+		input = event.target.value;
+	}
+
+	const onSubmit = (event) => {
+		event.preventDefault();
+		props.onSave(input);
+	}
+
+	return (
+	<form onSubmit={onSubmit};
+	<input type="text" value={input} onChange={onChangeInput} />
+	</form>
+	)
+}
+
+// You cannot skip Father between Child and Grand Father
+
+There cannot be communication between Siblings, only between child and parent
+
+// below implements dropdown
+
+<select>
+	<option>1</option>
+	<option>2</option>
+</select>
+
+
+Stateless components = does not use states, mostly used for Presentation
+Constrol components = maintains states, and handles input output, sends data to dumb components
+
+///List Repeat
+
+<Card>
+	{props.itemList.map( (item) => (
+			<Item 
+			key={item.id} //use id for Key Prop Bug (key is reserved)
+			item={item} />
+		) 
+	);}
+</Card>
+
+
+// TO USE ANY VARIABLE THAT NEEDS TO BE UPDATED ON UI, USE STATE
+
+// USE FUNCTIONAL STATE UPDATE WHEN OLD DATA IS ALSO REQUIRED
+
+// Filter a list using the Array method .filter()
+
+//Conditional Rendering
+
+{itemList.length===0 && <p> No items </p>}
+{itemList.length!=0 && <JSX>} 
+
+OF
+
+let content = <p>No Items</p>
+if(itemList.length > 0 ){
+	content = itemList.map((item) => (  --> remember the round brackets
+		<Item key={item.id} item={item} />
+	))
+}
+
+return <div> {content} </div>
+
+
+//dynamic css
+let divHeight = '100%';
+return <div style={ {'height': divHeight} }></div>
+
+
+***********Styling in React*******
+
+//inline styling for invalid input
+
+
+import React, { useState } from 'react';
+const Input = props => {
+  	const [inputValue, setInputValue] = useState('');
+	  const [isValid, setIsValid] = userState(true);
+
+	const inputChangeHandler = event => {
+		if(event.target.value) setIsValid(true);
+    		setInputValue(event.target.value);
+  	};
+
+  	const formSubmitHandler = event => {
+      event.preventDefault();
+
+      if(input.trim()===''){
+        setIsValid(false);
+      }
+      props.onAddGoal(enteredValue);
+  	};
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <div className="form-control">
+        <label style={ { color: isValid? 'black':'red' } } >Input Label</label>
+        <input style={ { borderColor: isValid? 'black':'red' } } type="text" onChange={inputChangeHandler} />
+      </div>
+      <button type="submit">Submit</Button>
+    </form>
+  );
+};
+
+//INLINE STYLE TAKES AN OBJECT FOR IT's VALUE
+
+export default Input;
+
+
+*****Dynamic Css******
+
+in Input.css
+	
+.form-control.invalid input {
+	border-color: red;
+}
+
+.form-control.invalid label {
+	color: red;
+}
+
+return (
+    <form onSubmit={formSubmitHandler}>
+      <div className={`form-control ${isValid? '' : 'invalid'}`}>
+        <label style={ { color: isValid? 'black':'red' } } >Input Label</label>
+        <input style={ { borderColor: isValid? 'black':'red' } } type="text" onChange={inputChangeHandler} />
+      </div>
+      <button type="submit">Submit</Button>
+    </form>
+  );
+
+
+
+
+******Styles components library****** NOT MY PREFFERED WAY
+
+const Component = styled.component``; -> tagged template literal ( button is method on styled object == styled.component() )
+
+styled object has method for all html tags like styled.h1, styled.span, etc
+
+Button example
+
+import styled from 'styled-components';
+
+const Button = styled.button`
+	color: white;
+	background: black;
+	cursor: pointer;
+	
+	&:focus, &:hover {
+		outline: none;
+	}
+`;
+
+
+
+// We can have two components in a file, Use only when one component is only used by the other component in the file
+
+// Styled components can be used as wrappers, as they pass all the props to the kids, there className can also be set on the Component tag
+
+
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+const FormControl = styled.div`
+  margin: 0.5rem 0;
+  & label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: ${props => (props.invalid ? 'red' : 'black')};
+  }
+  & input {
+    display: block;
+    width: 100%;
+    border: 1px solid ${props => (props.invalid ? 'red' : '#ccc')};
+    background: ${props => (props.invalid ? '#ffd7d7' : 'transparent')};
+    font: inherit;
+    line-height: 1.5rem;
+    padding: 0 0.25rem;
+  }
+  & input:focus {
+    outline: none;
+    background: #fad0ec;
+    border-color: #8b005d;
+  }
+`;
+
+const CourseInput = props => {
+  // useState, isValid, Change Listener, OnSUbmit Code here (removed to enhance readability)
+
+  return (
+    <form onSubmit={formSubmitHandler}>
+      <FormControl invalid={!isValid}>  ------> invalid is a prop sent to FormControl (Styled Component defined above)
+        <label>Course Goal</label>
+        <input type="text" onChange={goalInputChangeHandler} />
+      </FormControl>
+      <Button type="submit">Add Goal</Button>
+    </form>
+  );
+};
+
+export default CourseInput;
+
+
+********CSS MODULES**********
+
+in Element.module.css;
+
+element	 {
+	margin: 0.5rem 0;
+}
+
+element label {
+	font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: 'black';
+}
+ ... hover, active, invalid;
+
+in Button.js;
+
+
+import React from 'react';
+import styles from './Button.module.css';
+
+return (
+	<form>
+		<element className={`styles.button ${isValid ? '' : styles.invalid}`} />
+	</form>
+);
+
+
+
+*******Custom Dialog Box******
+
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10; --> z-index gives importance for overlapping elements
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  top: 30vh;
+  left: 10%;
+  width: 80%;
+  z-index: 100;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    left: calc(50% - 20rem);
+    width: 40rem;
+  }
+}
+
+
+Dialog Box Component JS
+
+import React from 'react';
+
+import Card from './Card';
+import Button from './Button';
+import classes from './ErrorModal.module.css';
+
+const ErrorModal = (props) => {
+  return (
+    <div>
+      <div className={classes.backdrop} onClick={props.onConfirm} />
+      <Card className={classes.modal}>
+        <header className={classes.header}>
+          <h2>{props.title}</h2>
+        </header>
+        <div className={classes.content}>
+          <p>{props.message}</p>
+        </div>
+        <footer className={classes.actions}>
+          <Button onClick={props.onConfirm}>Okay</Button>
+        </footer>
+      </Card>
+    </div>
+  );
+};
+
+export default ErrorModal;
+
+
+***Wrapper Component*** - to avoid unnecessary divs
+
+helpers/Wrapper.js
+
+const Wrapper = props => props.children;
+export default Wrapper;
+
+Built in React Wrappers
+
+import React from 'react';
+
+return(
+<> or <React.Fragment>
+	<el1>
+	<el2>
+</> or </React.Fragment>
+)
+
+
+Portals allow the tag of the components to be rendered in the Dom at desired location
+
+**Portal**
+
+inside index.html
+.
+.
+.
+<body>
+.
+.
+<div id="el1"></div>
+.
+.
+</html>
+
+in Component
+
+import ReactDOM from 'react-dom';
+const Compoment = props => {
+	return( 
+		{ReactDOM.createPortal((JSX) , document.getElementById('el1'))}
+	);
+}
+
+***Refs***
+
+import {useRef} from 'react';
+const component = (props) => {
+	const inputRef = useRef();
+	
+	// inputRef.current.value -> gives value from input, instead of using onChange attribute
+
+	return(
+		<input type="text" ref={inputRef}/>
+	);
+}
+
+for resetting value on submit, you can do
+inputRef.current.value = '' // But do this rarely, as only React should manipulte the dom
+inputRef -> Dom element object
+
+
+Refs are best when only you need to read a value
+
+useEffect() hook is used to stop a variable from updating when any State is updated
+
+
+useEffect (
+() => { //code that runs when no dependencies change},
+[] // dependencies, usually the variables present inside the above function
+);
+
+Example :
+
+useEffect(()=>{
+	setValid(name.trim().length>0);
+}, [setValid, name]); // setValid can be ommitted
+
+Debounce - handler when user makes pause while typing
+
+EX:
+
+useEffect(()=>{
+	const timer = setTimeout(()=>{
+		setValid(name.trim().length>0);
+	}, 500);
+	
+	return ()=>{clearInterval(timer)};  // the function inside the arrow function runs first before the function defined above after the first time input is changed
+
+	// in the above example we are setting input only afte a 0.5 sec pause from user while typing, everytime the key is pressed, 
+	   older timer is discarded tfore, the setValid is not called
+
+
+},[input])
+
+
+******useReducer()******* Very Important to handle forms read carefully
+
+used when multiple useState can be combined or when handling on change on a state depends on value of another state
+when updating a state depends on another state
+
+
+import React, { useState, useEffect, useReducer } from 'react';
+
+
+//Updating the state based on action
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.includes('@') };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+
+  // inital values
+  return { value: '', isValid: false };
+};
+
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.trim().length > 6 };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.trim().length > 6 };
+  }
+  return { value: '', isValid: false };
+};
+
+
+const Login = (props) => {
+
+
+  const [formIsValid, setFormIsValid] = useState(false);
+
+
+  // creating state and passing initial values, with reducer mentioned above to handle exchange changes called by 'dispatchEmail'
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+  });
+
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    value: '',
+    isValid: null,
+  });
+
+
+  // dispatching state change by sending updated state value and kind of action
+  const emailChangeHandler = (event) => {
+	// sending action type and payload
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
+  };
+
+  const passwordChangeHandler = (event) => {
+    dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
+  };
+
+ 
+  // currently called in html when element is blurred to check the validity of the input element
+  const validateEmailHandler = () => {
+    dispatchEmail({ type: 'INPUT_BLUR' });
+  };
+
+  const validatePasswordHandler = () => {
+    dispatchPassword({ type: 'INPUT_BLUR' });
+  };
+
+
+  // used to debounce using the isValid attribute inside the emailState and passwordState
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('Checking form validity!');
+      setFormIsValid(emailState.isValid && passwordState.isValid);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [emailState.isValid, passwordState.isValid]);
+
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    props.onLogin(emailState.value, passwordState.value);
+  };
+
+  return (
+      <form onSubmit={submitHandler}>
+        <div className={`${classes.control} ${ emailState.isValid === false ? classes.invalid : '' }`} >
+          <label htmlFor="email">E-Mail</label>
+          <input type="email" id="email" value={emailState.value} onChange={emailChangeHandler} onBlur={validateEmailHandler} />
+        </div>
+        <div className={`${classes.control} ${ passwordState.isValid === false ? classes.invalid : '' }`} >
+          <label htmlFor="password">Password</label>
+          <input type="password" id="password" value={passwordState.value} onChange={passwordChangeHandler} onBlur={validatePasswordHandler} />
+        </div>
+        <div className={classes.actions}>
+          <Button type="submit" disabled={!formIsValid}> Login </Button>
+        </div>
+      </form>
+    </Card>
+  );
+};
+
+export default Login;
+
+
+
+
+
+*********useState() vs useReducer()**********
+
+useState() - great for independent states of data, and limited to few kind of updates
+useReducer() - gives more customizability, to manage object states, for relatedStates
+
+
+refs cannot be made directly on Custom compoment tag
+
+
+*******useImperativeHandle****** -> for forward ref, allows imperative use of components, ie does not use state or ref
+
+ref -> ALWAYS RETURNS STRING
+
+const Input = React.forwardRef( (props, ref) => {
+
+	const functionName = () => {// manipulate compoment dom}
+
+	useImperativeHandle(ref , ()=>{
+		return {name: functionName}
+	});
+
+	return ( <jsx> )
+
+});  --> this allows custom component to allow ref
+
+
+const iRef = useRef('');
+iRef.current.name(); --> executes functionName in Input
+<Input ref={iRef}
+
+
+
+****ContextAPI*****
+ used for saving Global level States
+
+Ex: auth-context.js
+
+import React from 'react';
+React.createContext()
+
+
+//Do not use context if the variable inside it changes frequently
+
+store/auth-context.js 
+
+import React, { useState, useEffect } from 'react';
+
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: () => {},
+  onLogin: (email, password) => {}
+});
+
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // state on attributes of context
+
+
+// when the app runs for the first time, the useEffect function checks is user is logged in from localStorage	
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+
+    if (storedUserLoggedInInformation === '1') {
+      setIsLoggedIn(true);
+    }
+  }, []); // no dependencies, so the function checks exactly one time
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  const loginHandler = () => {
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+
+  return (
+    <AuthContext.Provider --> the context variables are only accessible to elements in the enclosing and child tags
+      value={{
+        isLoggedIn: isLoggedIn,
+        onLogout: logoutHandler,
+        onLogin: loginHandler,
+      }}
+    >
+      {props.children} --> since we are using this component as wrapper around other components
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;
+
+/index.js
+
+ReactDOM.render(<App />, document.getElementById('root'));
+Use below instead, AuthContextProvider is cutom element that sets the Contxt over entire application
+
+ReactDOM.render(
+  <AuthContextProvider>
+    <App />
+  </AuthContextProvider>,
+  document.getElementById('root')
+);
+
+in /Home.js
+
+import React, { useContext } from 'react';
+import AuthContext from '../../store/auth-context';
+
+const Home = (props) => {
+  const authCtx = useContext(AuthContext);
+
+  return (
+    ... <button onClick={authCtx.onLogout}>Logout</Button> ....
+  );
+};
+
+export default Home;
+
+****Images in React****
+
+import exampleImage from '../../assets/example.jpg';
+
+<img src={exampleImage} />
+
+
+var x = 2.3345;
+x.toFixed(2) // 2.33
+
+************Very useful***********
+
+if we send an object in prop like {id: 'x', type= 'text'}
+
+<input {...props.obj} /> turns into <input id = 'x' type = 'text' />
+
+
+IMPORTANT if we use .concat() instead of .push() to an existing array, the original array is not modified
+
+
+.bind() // allows to preconfigure execution of a function 
+
+use .findIndex() when we need to search for a particular object attribute in a list of objects
+
+
+
+
+************HTTP REQUESTS*************
+
+fetch('url').then( (response) => { return response.json() } ).then ( (data) => { console.log(data) } );
+
+//Fetch by default sends GET Request
+
+
+asyc function sendPost(){
+
+	const res = await fetch('url', {
+		method: 'POST',
+		body: JSON.stringify(obj),
+		header: {
+			'Content-Type': 'application/json'
+		}
+	});	
+	const data = await res.json();
+}
+
+**********Custom Hooks*******
+
+-> name has to start with 'use'
+
+The state and hooks in a custom hook are tied to the component calling it
+Logic is shared, not the concrete state
+
+use-counter.js -> Custom Hook
+
+const useCounter = () => {
+
+  const [counter, setCounter] = useState(0);
+
+  useEffect(()=>{
+    const interval = setInterval( () => {
+      setCounter((previousCounter) => { return previousCounter += 1; });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [])
+}
+
+export default useCounter;
+
+Component.js
+
+import useCounter;
+
+const comp = () => {
+  const ch = useCounter();
+
+  return <p>{ch}</p> // value of ch comes from the state of counter in the useCounter Hook
+}
+
+When you are returning a function from a Custom Hook, define the function within a useCallback() function, if it is being called inside useEffect in the calling component
+
+
+useMemo -> to cache complex calculation value (if it gives same ouput for same input)
+const doubleNumber = useMemo(() =>{slowFunction(number)}, [number]);
+// above code runs only when there is a change in 'number', if any other state changes then React won't re-calculate doubleNumber
+// also used to store the referenceValue of objects, so it remains constant when component re-renders
+
+useCallback is similar to useMemo, while useMemo returns values to a variable, useCallback returns an entire function
+
+*****Input Hook***** useInput
+
+import { useReducer } from 'react';
+
+const initialInputState = {
+  value: '',
+  isTouched: false,
+};
+
+const inputStateReducer = (state, action) => {
+  if (action.type === 'INPUT') {
+    return { value: action.value, isTouched: state.isTouched };
+  }
+  if (action.type === 'BLUR') {
+    return { isTouched: true, value: state.value };
+  }
+  if (action.type === 'RESET') {
+    return { isTouched: false, value: '' };
+  }
+  return inputStateReducer;
+};
+
+const useInput = (validateValue) => {
+  const [inputState, dispatch] = useReducer(
+    inputStateReducer,
+    initialInputState
+  );
+
+  const valueIsValid = validateValue(inputState.value);
+  const hasError = !valueIsValid && inputState.isTouched;
+
+  const valueChangeHandler = (event) => {
+    dispatch({ type: 'INPUT', value: event.target.value });
+  };
+
+  const inputBlurHandler = (event) => {
+    dispatch({ type: 'BLUR' });
+  };
+
+  const reset = () => {
+    dispatch({ type: 'RESET' });
+  };
+
+  return {
+    value: inputState.value,
+    isValid: valueIsValid,
+    hasError,
+    valueChangeHandler,
+    inputBlurHandler,
+    reset,
+  };
+};
+
+export default useInput;
+
+
+inside Form.js
+
+import useInput from '../hooks/use-input';
+const isNotEmpty = (value) => value.trim() !== '';
+const Form = (props) => {
+  const {
+    value: firstNameValue,
+    isValid: firstNameIsValid,
+    hasError: firstNameHasError,
+    valueChangeHandler: firstNameChangeHandler,
+    inputBlurHandler: firstNameBlurHandler,
+    reset: resetFirstName,
+  } = useInput(isNotEmpty);
+
+  let formIsValid = false;
+
+  if (firstNameIsValid) {
+    formIsValid = true;
+  }
+
+  const submitHandler = event => {
+    event.preventDefault();
+    if (!formIsValid) {
+      return;
+    }
+    console.log('Submitted!');
+    console.log(firstNameValue);
+    resetFirstName();
+  };
+
+  const firstNameClasses = firstNameHasError ? 'form-control invalid' : 'form-control';
+
+  return (
+    <form onSubmit={submitHandler}>
+      <div className='control-group'>
+        <div className={firstNameClasses}>
+          <label htmlFor='name'>First Name</label>
+          <input
+            type='text'
+            id='name'
+            value={firstNameValue}
+            onChange={firstNameChangeHandler}
+            onBlur={firstNameBlurHandler}
+          />
+          {firstNameHasError && <p className="error-text">Please enter a first name.</p>}
+        </div>
+      <div className='form-actions'>
+        <button disabled={!formIsValid}>Submit</button>
+      </div>
+    </form>
+  );
+};
+export default Form;
+
+***********Redux*********
+
+In big projects, there can be complex nesting of Contexts which becomes difficult to maintain and manage.
+
+Redux has one state store which is shared by entire application, ex can store authentication
+
+Components use reducer to updating store states
+
+Reducer function is not the useReducer Hook
+
+Steps-
+
+1. Create an empty folder 
+2. create redux-demo.js (any name)
+3. run command - npm init -Y => creates package.json 
+4. npm install redux --save 
+
+Now we are ready to use Redux 
+
+The above project is NodeJS and not Javascript 
+
+redux-demo.js:
+
+const redux = require('redux');
+
+const counterReducer = (state = {counter : 0} /give default value/, action) => {
+  
+  if(action.type = 'INCREMENT'){
+    return {
+      count: state.counter + 1
+    }
+  }
+  if(action.type = 'DECREMENT'){
+    return {
+      count: state.counter - 1
+    }
+  }
+  
+  return state; // can be anything, most often is object
+};  // should be pure function, gives same output for same input, should not have side effects
+
+const store = redux.createStore(counterReducer);
+
+const counterSubscriber = () => {
+  store.getState();
+}
+
+// to trigger event when state changes
+store.subscribe(counterSubscriber);
+store.dispatch({type: 'INCREMENT'});
+store.dispatch({type: 'DECREMENT'});
+
+
+run command : node reduc-demo.js
+
+// CONNECTING REDUX with REACT app
+
+npm install --save redux react-redux
+
+create src/store/index.js (this is not apps index.js, but redux's index.js)
+
+import {createStore} from 'redux';
+// redux code
+export default store;
+
+
+in The APP's index.js
+import {Provider} from 'react-redux';
+import store from './store/index'
+
+..
+ReactDOM.render(<Provider store={store} ><App /></Provider>, docu...);
+
+**inside the Component.js where we want to access the store
+import { useSelector, useDispatch } from 'react-redux';
+
+const Component = () => {
+  const counter = useSelector(state => state.counter); // sets us subscription to get the latest couter
+  const incrementHandler = () => {
+    dispatch({type: 'INCREMENT'});
+  }
+}
+
+
+*******Routing******
+npm install --save react-router-dom@5 // installs React Router version 5
+
+*in index.js
+import {BrowserModule} from 'react-router-dom';
+ReactDOM.render(<BrowserRouter> <App /></BrowserRouter>, doc.getelemid)
+//wrap App component with Browser Router
+
+*in App.js
+import {Route, Link, NavLink} from 'react-router-dom';
+//We use Link instead of <a> so that page does not reload (it prevents default)
+//We use NavLink instead of Link so that we can apply css to active router link
+
+import class from './App.module.css'
+
+fn App(){
+	return (
+		<header>
+			<ul>
+				<li><Link to="/page1" /></li>
+				<li><Link to="/page2" /></li>
+				<li><NavLink activeClassName={classes.active} to="/page2" /></li>
+			</ul>
+		</header>
+		<div>
+			<Route path='/page1'><Page1 /></Route>
+			<Route path='/page2'><Page2 /></Route>
+
+			//to send params in url
+			<Rotue path='products'></Route>
+			<Route path='/products/:id'><PDetail /></Route>
+		</div>
+	);
+}
+
+import {useParams} from 'react-router-dom';
+const PDetail: ReactFC = () => {
+	const params = useParams();
+	console.log(params.id) // logs-344 when loading /product-detail/344
+}
+export default PDetail;
+
+
+**Switch
+import {Switch} from 'react-router-dom';
+
+<Switch>
+	<Route path='/welcome'><Welcome /></Route>
+	<Route path='/products'><Products /></Route>
+	<Route path='/products/:pid'><ProductDetails /></Route>
+</Switch>
+
+The above syntax only allows one route to be active,
+So when we load /products/234 -> Products is called because the route matches and it is first in the order
+
+import {Redirect} from 'react-router-dom';
+<Switch>
+	<Route path='/' exact>
+		<Redirect to='/welcome' />		
+	</ Route>
+
+	<Route path='/welcome'><Welcome /></Route>
+	<Route path='/products' exact><Products /></Route>
+	<Route path='/products/:pid'><ProductDetails /></Route>
+	
+	//has to come last
+	<Route path='*'> <NotFoundPage> </Route>
+
+</Switch>
+when we load /products/234 -> ProductDetails is called since prop exact is called
+
+import {useHistory} from 'react-router-dom';
+
+const ProductDetails = () => {
+	const params = useParams();
+	const history = useParams();
+
+	onSUbmit(){
+		history.push('/nextPage'); // redirects to nextPage and maintains history to allow user to go back
+		history.replace('/nextPage'); // redirects to nextPage but clears history so that user cannot go back
+	}
+
+	return(
+		<Fragment>
+			<h1>Product Details</h1>
+			<p>{params.pid}</p>
+		
+			//nested routing with dynamic param value
+			<Route path={`/product/${params.pid}/reviews}> <Reviews /></Route>
+			<Route path={`/product/${params.pid}/description}> <Description /></Route>
+		</Fragment>
+	)
+}
+
+***Prompt while working on components with Form
+import {Prompt} from 'react-router-dom';
+
+const AddDetails = () => {
+	const [isEntering, setIsEntering] = useState(false);
+		
+	const fh = () => {
+		setIsEntering(true);
+	}
+
+	const submit = () => {
+		setIsEntering(false);
+	}
+
+	return(
+		<Fragment>
+			//triggers when user tries to leave, when is true
+			// message receive object which stores information of the current page
+			<Prompt when={isEntering} message={(location) => 'You sure ?'} />
+			<form onFocus={fh}>...</form>
+		</Fragment>
+	);
+}
+
+**Query parameters
+
+import {useHistory, useLocation} from 'react-router-dom';
+
+// useLocation gives access to the location object which has info of currently loaded URL
+
+
+const history = useHistory();
+const location = useLocation();
+
+// URLSearchParams is a Javascript function to evluate query params
+cont queryParams = new URLSearchParams(location.search);
+
+const isAscending = queryParams.get('sort') === 'asc';
+
+const chaneSortingHandler = () => {
+	history.push('/quotes')
+}
+
+**useRouteMatch()
+
+import {useRouteMatch} from 'react-router-dom';
+
+const match = useRouteMatch();
+//like useLocation but gives more information
+// USE FOR NESTED ROUTES
+return(
+	<Fragment>
+		<Route path={match.path} exact>...</ Route>
+		<Route path={`${match.path}/comments`} exact>...</ Route>
+	</ Fragment>
+)
+
+**Lazy Loading
+
+
+//normal import
+import NewQuote from './NewQuote';
+
+import {React, Suspense} from 'react';
+
+//Lazy Loading import
+const NewQuote = React.lazy(() => import('./NewQuote'));
+
+<Suspense fallback={<p>Loading</p> //any jsx}>
+	<Route path='/newQuote'><NewQuote /></ Route>
+</ Suspense>
+
+
+**Testing
+
+to run tests and asserting results -> jest
+simulating (rendering) React components -> React Testing Library
+
+
+screen.get -> will return error
+screen.query -> will not return error
+screen.find -> will return promise
+
+//Render
+
+//Set Actions
+
+//Fetch item
+
+test('renders Good to see', () => {
+	
+	render(<Component />);
+	const outputElement = screen.getByText('good to see you', {exact: false});
+	expect(outputElement).toBeInTheDocument();
+
+});
+
+import userEvent from '@testing-library/user-event';
+
+test('button click test', () => {
+	render(<Component />);
+	const button = screen.getByRole('button');
+or	const button = screen.getByText('click');
+
+	userEvent.click();
+
+	const element = screen.getByText('button clicked');
+	expect(element).toBeInTheDocument();
+
+	const element = screen.getByText('button not clicked');
+	expect(element).not.toBeInTheDocument();
+or	expect(element).toBeNull();
+});
+
+
+test('button click test', asyn () => {
+	render(<Component />);
+
+	//for async calls use findByRole -> as it runs again
+	const listItems = await screen.findAllByRole('listitem');
+	expect(listItems).not.toHaveLegth(0);
+});
+
+
+test('fetch mock', asyn () => {
+
+	// mock to reduce network traffic on API
+	window.fetch = jest.fn();
+	window.fetch.mockResolvedValueOnce({
+		json: async() => [{key:1, value:'test'}];
+	});
+
+	render(<Component />);
+	// check the list item length below
+
+	const list = await screen.findAllByRole('listitems');
+	expect(list).not.toHaveLength(0);
+
+
+	
+	render(<Component />);
+
+	//for async calls use findByRole -> as it runs again
+	const listItems = await screen.findAllByRole('listitem');
+	expect(listItems).not.toHaveLegth(0);
+});
+
+
+
+
+
+
+
+
+
